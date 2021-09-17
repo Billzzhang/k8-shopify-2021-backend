@@ -1,0 +1,7 @@
+/imagerepo/*secret.yaml
+/imagerepo/*secret.env
+/imagerepo/*ingress.yaml
+/imagerepo/*ingress.env
+
+/postgres/*secret.yaml
+/postgres/*secret.env

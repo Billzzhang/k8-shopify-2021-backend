@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: imagerepo
+  labels:
+    app: imagerepo
+spec:
+  selector:
+    matchLabels:
+      app: imagerepo
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: imagerepo
+    spec:
+      containers:
+      - name: imagerepo
+        image: billzzhang/shopify-2021-backend:latest
+        env:
+        - secretRef:
+            name: imagerepo-secret
+        ports:
+        - containerPort: 3000
+          protocol: TCP
+        resources: {}
+        imagePullPolicy: Always
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

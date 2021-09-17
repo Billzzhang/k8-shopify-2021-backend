@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: imagerepo-ingress
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/app-root: /images
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: TEMPLATE_IMAGE-REPO_SSL_ARN
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+spec:
+  rules:
+  - host: TEMPLATE_IMAGE-REPO_HOST
+    http:
+      paths:
+      - path: /images
+        backend:
+          serviceName: imagerepo
+          servicePort: http
