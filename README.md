@@ -5,7 +5,7 @@ Assume you have eks, aws cli, and kubectl installed and configured
 
 Create Cluster
 ```
-    eksctl create cluster --name shopify-2021-backend --region us-west-2 --version 1.20 --nodegroup-name ng-default --node-type t2.micro --nodes-min 0 --nodes-max 2
+    eksctl create cluster --name shopify-2021-backend --version 1.20 --nodegroup-name ng-default --node-type t2.small --nodes-min 0 --nodes-max 2
 ```
 
 Select the Cluster
@@ -30,8 +30,13 @@ Populate .env files `imagerepo-secret.env` from [imagerepo-secret.env.sample](im
 Generate `imagerepo-secret.yaml` based on `imagerepo-secret.yaml.tmpl` and using the values added to `imagerepo-secret.env`
 ```
 sed \
--e "s%TEMPLATE_POSTGRES_USER%$(echo $(grep -oP '^POSTGRES_USER=\K.*' imagerepo/imagerepo-secret.env) | tr -d '\n' |base64 -w0)%g" \
--e "s%TEMPLATE_POSTGRES_PASSWORD%$(echo $(grep -oP '^POSTGRES_PASSWORD=\K.*' imagerepo/imagerepo-secret.env) | tr -d '\n' |base64 -w0)%g" \
+-e "s%TEMPLATE_DB_USERNAME%$(echo $(grep -oP '^DB_USERNAME=\K.*' imagerepo/imagerepo-secret.env) | tr -d '\n' |base64 -w0)%g" \
+-e "s%TEMPLATE_DB_PASSWORD%$(echo $(grep -oP '^DB_PASSWORD=\K.*' imagerepo/imagerepo-secret.env) | tr -d '\n' |base64 -w0)%g" \
+-e "s%TEMPLATE_DB_HOST%$(echo $(grep -oP '^DB_HOST=\K.*' imagerepo/imagerepo-secret.env) | tr -d '\n' |base64 -w0)%g" \
+-e "s%TEMPLATE_DB_NAME%$(echo $(grep -oP '^DB_NAME=\K.*' imagerepo/imagerepo-secret.env) | tr -d '\n' |base64 -w0)%g" \
+-e "s%TEMPLATE_DB_PORT%$(echo $(grep -oP '^DB_PORT=\K.*' imagerepo/imagerepo-secret.env) | tr -d '\n' |base64 -w0)%g" \
+-e "s%TEMPLATE_DB_ADAPTER%$(echo $(grep -oP '^DB_ADAPTER=\K.*' imagerepo/imagerepo-secret.env) | tr -d '\n' |base64 -w0)%g" \
+-e "s%TEMPLATE_SAFE_HOSTS%$(echo $(grep -oP '^SAFE_HOSTS=\K.*' imagerepo/imagerepo-secret.env) | tr -d '\n' |base64 -w0)%g" \
 imagerepo/imagerepo-secret.yaml.tmpl > imagerepo/imagerepo-secret.yaml
 ```
 
@@ -69,6 +74,10 @@ Based on https://github.com/kubernetes/ingress-nginx and more specifically using
 
 Before applying the controller, make sure to add the ACM SSL ARN, and the VPC Network. Lookup for placeholders XXX
 
+```
+kubectl apply -f ingress-nginx/deploy.yaml
+```
+
 ### Apply Applications
 
 #### Image-repo
@@ -77,18 +86,19 @@ kubectl apply -f imagerepo/imagerepo-secret.yaml
 
 kubectl apply -f imagerepo/imagerepo-deployment.yaml
 kubectl apply -f imagerepo/imagerepo-service.yaml
+kubectl apply -f imagerepo/imagerepo-ingress.yaml
 ```
 
 #### Postgres
 ```
 kubectl apply -f storage/pg-storage.yaml
-kubectl apply -f postgres/pg-secret.yaml
-kubectl apply -f postgres/pg-deployment.yaml
-kubectl apply -f postgres/pg-service.yaml
+kubectl apply -f postgres/postgres-secret.yaml
+kubectl apply -f postgres/postgres-deployment.yaml
+kubectl apply -f postgres/postgres-service.yaml
 ```
 
 ### Route 53: DNS Zone
 Create the CNAME (only) records as required
 ```
-  imagerepo.billzzhang.com              CNAME       <Ingress keycloak-ingress ADDRESS>
+  imagerepo.billzzhang.com              CNAME       <Ingress imagerepo ADDRESS>
 ```
