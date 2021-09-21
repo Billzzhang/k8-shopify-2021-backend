@@ -1,11 +1,19 @@
 # Deployment Guide
 
+This is instructions on how to deploy the image repository related to the shopify 2021 infrastructure / devops challenge found [here](https://www.shopify.ca/careers/backend-developer-intern-remote-winter-2022-6932cbed).
+
+## Link to a hosted AWS Kubernetes Deployment
+
+[imagerepo.billzzhang.com](https://imagerepo.billzzhang.com/images)
+
+NOTE: Image Preview and TailwindCSS is not working as of now, however a local deployment and docker-compose file works completely at this [repository](https://github.com/Billzzhang/shopify-2021-backend).
+
 ## EKS Cluster
 Assume you have eks, aws cli, and kubectl installed and configured
 
 Create Cluster
 ```
-    eksctl create cluster --name shopify-2021-backend --version 1.20 --nodegroup-name ng-default --node-type t2.small --nodes-min 0 --nodes-max 2
+eksctl create cluster --name shopify-2021-backend --version 1.20 --nodegroup-name ng-default --node-type t2.small --nodes-min 0 --nodes-max 2
 ```
 
 Select the Cluster
