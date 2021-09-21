@@ -1,6 +1,7 @@
 # Deployment Guide
 
-This is instructions on how to deploy the image repository related to the shopify 2021 infrastructure / devops challenge found [here](https://www.shopify.ca/careers/backend-developer-intern-remote-winter-2022-6932cbed).
+This is instructions on how to deploy the image repository using AWS Elastic Kubernetes Service.   
+This challenge is in relation to the shopify 2021 infrastructure / devops challenge found [here](https://www.shopify.ca/careers/infrastructure-site-reliability-engineering-intern-remote-winter-2022-6932cbed).
 
 ## Link to a hosted AWS Kubernetes Deployment
 
